@@ -1,0 +1,83 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=rsyslog
+      - MYSQL_USER=rsyslog
+      - MYSQL_PASSWORD=rsyslog_password
+      - PHP_MEMORY_LIMIT=256M
+      - PHP_MAX_EXECUTION_TIME=30
+    volumes:
+      - ./:/var/www/html
+      - ./docker/config.php:/var/www/html/config.php
+      - web_logs:/var/log
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    environment:
+      - MYSQL_DATABASE=rsyslog
+      - MYSQL_USER=rsyslog
+      - MYSQL_PASSWORD=rsyslog_password
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_INNODB_BUFFER_POOL_SIZE=256M
+      - MYSQL_INNODB_LOG_FILE_SIZE=64M
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./docker/backup:/backup
+      - db_logs:/var/log/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  rsyslog:
+    image: rsyslog/syslog_appliance_alpine
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_DATABASE=rsyslog
+      - MYSQL_USER=rsyslog
+      - MYSQL_PASSWORD=rsyslog_password
+    volumes:
+      - ./docker/rsyslog.conf:/etc/rsyslog.conf:ro
+      - rsyslog_data:/var/log
+      - ./docker/monitor.sh:/usr/local/bin/monitor.sh:ro
+    ports:
+      - "514:514/udp"
+      - "514:514/tcp"
+    healthcheck:
+      test: ["CMD", "rsyslogd", "-N1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+    command: >
+      sh -c "chmod +x /usr/local/bin/monitor.sh &&
+             echo '*/5 * * * * /usr/local/bin/monitor.sh' >> /etc/crontabs/root &&
+             crond -b &&
+             rsyslogd -n"
+
+volumes:
+  mysql_data:
+  rsyslog_data:
+  web_logs:
+  db_logs: 

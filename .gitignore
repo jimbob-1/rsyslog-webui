@@ -2,3 +2,7 @@ config.php
 .htaccess
 json/reports/cache/*.json
 site.webmanifest
+.DS_Store
+.idea
+*.swp
+docker/config.php
