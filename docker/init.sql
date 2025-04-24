@@ -47,29 +47,31 @@ FROM SystemEvents
 WHERE ReceivedAt >= DATE_SUB(NOW(), INTERVAL 24 HOUR)
 ORDER BY ReceivedAt DESC;
 
--- Alert Rules table
-CREATE TABLE IF NOT EXISTS AlertRules (
-    id int unsigned not null auto_increment,
-    name varchar(100) not null,
-    condition varchar(50) not null,
-    threshold int not null,
-    pattern text,
-    status varchar(20) not null default 'active',
-    created_at timestamp not null default CURRENT_TIMESTAMP,
-    updated_at timestamp not null default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (id),
-    UNIQUE KEY uk_name (name)
+-- Alerts table
+CREATE TABLE IF NOT EXISTS Alerts (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    AlertCondition TEXT NOT NULL,
+    Status ENUM('active', 'resolved') DEFAULT 'active',
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    LastTriggered TIMESTAMP NULL,
+    Priority ENUM('emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug') DEFAULT 'warning',
+    Description TEXT,
+    NotificationMethod ENUM('email', 'webhook', 'both') DEFAULT 'email',
+    NotificationTarget VARCHAR(255),
+    Enabled BOOLEAN DEFAULT TRUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Alert History table
 CREATE TABLE IF NOT EXISTS AlertHistory (
-    id int unsigned not null auto_increment,
-    rule_id int unsigned not null,
-    time timestamp not null default CURRENT_TIMESTAMP,
-    message text not null,
-    status varchar(20) not null,
-    PRIMARY KEY (id),
-    KEY idx_rule_id (rule_id),
-    KEY idx_time (time),
-    CONSTRAINT fk_rule_id FOREIGN KEY (rule_id) REFERENCES AlertRules (id) ON DELETE CASCADE
+    ID INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    AlertID INT NOT NULL,
+    Time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Message TEXT NOT NULL,
+    Status VARCHAR(20) NOT NULL,
+    PRIMARY KEY (ID),
+    KEY idx_alert_id (AlertID),
+    KEY idx_time (Time),
+    CONSTRAINT fk_alert_id FOREIGN KEY (AlertID) REFERENCES Alerts (ID) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci; 

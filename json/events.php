@@ -3,6 +3,21 @@
 
 	header( 'Content-Type: application/json' );
 			
+	// Get sort parameters
+	$sort = isset($_GET['sort']) ? $_GET['sort'] : 'ID';
+	$order = isset($_GET['order']) ? strtoupper($_GET['order']) : 'DESC';
+
+	// Validate sort field to prevent SQL injection
+	$validSortFields = ['ID', 'Priority', 'ReceivedAt', 'Facility', 'FromHost', 'SysLogTag', 'Message'];
+	if (!in_array($sort, $validSortFields)) {
+		$sort = 'ID';
+	}
+
+	// Validate order
+	if ($order !== 'ASC' && $order !== 'DESC') {
+		$order = 'DESC';
+	}
+
 	$query = "SELECT *, LEFT(Message, 120) AS SmallMessage FROM SystemEvents ";
 	$wherestring = "";
 	if (isset($_GET[ "search" ])){
@@ -102,16 +117,29 @@
 		}
 	}
 	
-	$db = new PDO( "mysql:host=$mysql_server;dbname=$mysql_database;charset=utf8", $mysql_user, $mysql_password );
+	try {
+		if (!$pdo) {
+			throw new Exception("Database connection not available");
+		}
 
-	$rows = array();
-	$stmt = $db->prepare($query . $wherestring . " ORDER BY ID DESC LIMIT 2000");
+		$rows = array();
+		$stmt = $pdo->prepare($query . $wherestring . " ORDER BY $sort $order LIMIT 2000");
 
-	if( $stmt->execute( $qArray ) )
-	foreach( $stmt as $row ) {
-		$rows[] = $row;
+		if( $stmt->execute( $qArray ) )
+		foreach( $stmt as $row ) {
+			// Format dates for consistency
+			$row['ReceivedAt'] = date('Y-m-d H:i:s', strtotime($row['ReceivedAt']));
+			if ($row['DeviceReportedTime']) {
+				$row['DeviceReportedTime'] = date('Y-m-d H:i:s', strtotime($row['DeviceReportedTime']));
+			}
+			$rows[] = $row;
+		}
+
+		echo json_encode( $rows );
+
+	} catch (Exception $e) {
+		http_response_code(500);
+		echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 	}
-
-	echo json_encode( $rows );
 
 ?>

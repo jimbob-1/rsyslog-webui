@@ -19,6 +19,9 @@ RUN crontab /etc/cron.d/maintenance
 # Set working directory
 WORKDIR /var/www/html
 
+# Create required directories
+RUN mkdir -p /var/www/html/json/reports/cache
+
 # Copy application files
 COPY . /var/www/html/
 

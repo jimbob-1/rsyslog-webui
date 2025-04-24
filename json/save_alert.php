@@ -1,42 +1,76 @@
 <?php
-include '../config.php';
+header('Content-Type: application/json');
+include_once __DIR__ . '/../config.php';
+
+// Get POST data
+$data = json_decode(file_get_contents('php://input'), true);
+
+if (!isset($data['name']) || !isset($data['condition']) || !isset($data['priority'])) {
+    echo json_encode(['success' => false, 'error' => 'Missing required fields']);
+    exit;
+}
+
+// Check if $pdo is available
+if (!isset($pdo) || $pdo === null) {
+    echo json_encode(['success' => false, 'error' => 'Database connection not available']);
+    exit;
+}
 
 try {
-    $db = new PDO(
-        "mysql:host=$mysql_server;dbname=$mysql_database;charset=utf8mb4",
-        $mysql_user,
-        $mysql_password,
-        array(
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
-        )
-    );
+    // If ID is provided, update existing alert
+    if (isset($data['id'])) {
+        $stmt = $pdo->prepare("UPDATE Alerts SET 
+            Name = ?, 
+            AlertCondition = ?, 
+            Priority = ?, 
+            Description = ?, 
+            NotificationMethod = ?, 
+            NotificationTarget = ?,
+            UpdatedAt = NOW()
+            WHERE ID = ?");
+        
+        $result = $stmt->execute([
+            $data['name'],
+            $data['condition'],
+            $data['priority'],
+            $data['description'] ?? '',
+            $data['notification_method'] ?? 'email',
+            $data['notification_target'] ?? '',
+            $data['id']
+        ]);
 
-    // Get POST data
-    $name = $_POST['name'] ?? '';
-    $condition = $_POST['condition'] ?? '';
-    $threshold = $_POST['threshold'] ?? 0;
-    $pattern = $_POST['pattern'] ?? '';
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'Alert updated successfully']);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to update alert']);
+        }
+    } 
+    // Otherwise create new alert
+    else {
+        $stmt = $pdo->prepare("INSERT INTO Alerts 
+            (Name, AlertCondition, Priority, Description, NotificationMethod, NotificationTarget, CreatedAt, UpdatedAt, Status, Enabled) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), 'active', TRUE)");
+        
+        $result = $stmt->execute([
+            $data['name'],
+            $data['condition'],
+            $data['priority'],
+            $data['description'] ?? '',
+            $data['notification_method'] ?? 'email',
+            $data['notification_target'] ?? ''
+        ]);
 
-    // Validate input
-    if (empty($name) || empty($condition) || empty($threshold)) {
-        throw new Exception('Missing required fields');
+        if ($result) {
+            echo json_encode([
+                'success' => true, 
+                'message' => 'Alert created successfully',
+                'id' => $pdo->lastInsertId()
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Failed to create alert']);
+        }
     }
-
-    // Insert new alert rule
-    $query = "
-        INSERT INTO AlertRules (name, condition, threshold, pattern, status)
-        VALUES (?, ?, ?, ?, 'active')
-    ";
-    $stmt = $db->prepare($query);
-    $stmt->execute([$name, $condition, $threshold, $pattern]);
-
-    header('Content-Type: application/json');
-    echo json_encode(array('success' => true));
-
-} catch (Exception $e) {
-    header('HTTP/1.1 400 Bad Request');
-    echo json_encode(array('success' => false, 'error' => $e->getMessage()));
+} catch (PDOException $e) {
+    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
 }
 ?> 

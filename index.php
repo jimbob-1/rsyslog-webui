@@ -1,421 +1,421 @@
-<!DOCTYPE html>
+<?php
+include 'config.php';
+include 'includes/settings.php';
+include 'includes/header.php';
 
-<?php include 'config.php'; ?>
+$settings = Settings::getInstance();
+?>
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo $site_name; ?></title>
+<h1>System Events</h1>
 
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-table.min.css" rel="stylesheet">
-    <link href="css/bootstrap-tooltip.css" rel="stylesheet">
-	<link href="css/bootstrap-context.css" rel="stylesheet"> 
-    <link href="css/custom.css" rel="stylesheet">   
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="searchForm" class="search-form row g-2">
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="txtSearch" placeholder="Search events..." autocomplete="off">
+            </div>
+        </form>
+    </div>
+</div>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-	<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-	<link rel="manifest" href="site.webmanifest">
-  </head>
+<div class="card mb-4">
+    <div class="card-body p-0">
+        <div class="progress" style="height: 25px; border-radius: 0;">
+            <div id="pgError" class="progress-bar bg-danger" role="progressbar" style="width: 0%" data-bs-toggle="tooltip" title="Errors">
+                <span class="severity-label">Error</span>
+            </div>
+            <div id="pgWarning" class="progress-bar bg-warning" role="progressbar" style="width: 0%" data-bs-toggle="tooltip" title="Warnings">
+                <span class="severity-label">Warning</span>
+            </div>
+            <div id="pgNotice" class="progress-bar bg-info" role="progressbar" style="width: 0%" data-bs-toggle="tooltip" title="Notices">
+                <span class="severity-label">Notice</span>
+            </div>
+            <div id="pgInfo" class="progress-bar bg-primary" role="progressbar" style="width: 0%" data-bs-toggle="tooltip" title="Info">
+                <span class="severity-label">Info</span>
+            </div>
+            <div id="pgDebug" class="progress-bar bg-secondary" role="progressbar" style="width: 0%" data-bs-toggle="tooltip" title="Debug">
+                <span class="severity-label">Debug</span>
+            </div>
+        </div>
+        <table id="table-style" 
+                data-toggle="table" 
+                data-url="json/events.php" 
+                data-height="550"
+                data-sort-name="ReceivedAt"
+                data-sort-order="desc"
+                data-pagination="true"
+                data-page-size="50"
+                data-page-list="[10, 25, 50, 100]"
+                data-search="true"
+                data-search-align="left"
+                data-search-on-enter-key="false"
+                data-strict-search="false"
+                data-trim-on-search="true"
+                data-show-search-button="false"
+                data-search-accent-neutralise="true"
+                data-show-refresh="true"
+                data-show-toggle="true"
+                data-show-columns="true"
+                data-show-columns-toggle-all="true"
+                data-show-fullscreen="true"
+                data-show-pagination-switch="false"
+                data-show-export="true"
+                data-buttons="buttons"
+                data-buttons-align="right"
+                data-buttons-class="primary"
+                data-buttons-prefix="btn-"
+                data-click-to-select="true"
+                data-export-types='["csv", "txt", "excel"]'
+                data-export-data-type="all"
+                data-export-options='{
+                    "fileName": "system-events",
+                    "worksheetName": "System Events",
+                    "csvSeparator": ",",
+                    "ignoreColumn": [5],
+                    "exportDataType": "all"
+                }'
+                data-row-style="rowStyle"
+                class="table table-hover table-striped mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th data-field="Priority" 
+                        data-sortable="true" 
+                        data-width="100"
+                        data-visible="true"
+                        data-switchable="true"
+                        data-formatter="SeverityFormat"
+                        data-search-formatter="false">Severity</th>
+                    <th data-field="ReceivedAt" 
+                        data-sortable="true"
+                        data-visible="true"
+                        data-switchable="true"
+                        data-width="160">Date</th>
+                    <th data-field="Facility" 
+                        data-sortable="true"
+                        data-visible="true"
+                        data-switchable="true"
+                        data-width="100">Facility</th>
+                    <th data-field="FromHost" 
+                        data-sortable="true"
+                        data-visible="true"
+                        data-switchable="true"
+                        data-width="180">Host</th>
+                    <th data-field="SysLogTag" 
+                        data-sortable="true"
+                        data-visible="true"
+                        data-switchable="true"
+                        data-width="200">Tag</th>
+                    <th data-field="MessageType" 
+                        data-visible="false"
+                        data-switchable="true">Type</th>
+                    <th data-field="Message" 
+                        data-sortable="true"
+                        data-visible="true"
+                        data-switchable="true">Message</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-table.min.js"></script>
-	<script src="js/bootstrap-tooltip.js"></script>
-	<script src="js/bootstrap-context.js"></script> 
+<!-- JavaScript Dependencies -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/extensions/toolbar/bootstrap-table-toolbar.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.3/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.27.0/tableExport.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.27.0/libs/jsPDF/jspdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.27.0/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  	<script type="text/javascript">
-	
-	$(function () {
-		
-		var firstRowID, lastRowID;
-		
-		getSummary();
-		
-		var selectedRow = "";
-		var selectedNodeText = "";
-
-		context.init({
-			fadeSpeed: 100,
-			filter: function ($obj){},
-			above: 'auto',
-			preventDoubleContext: true,
-			compress: false
-		});
-
-		var menu = "", menudate = "";
-		
-		$('#table-style').css( 'cursor', 'pointer' );
-
-		$("#table-style").delegate("tr td", "mousedown", function(event) {
-			if(event.which == 3){
-				
-				context.destroy();
-				//context.destroy($("table-style tr"));
-
-				var selectedRow = $(this);
-				selectedNodeText = selectedRow.html();
-				selectedColumn = "";
-				
-				if(selectedRow.find('span').length > 0) selectedNodeText = selectedRow.find('span').html();
-
-				if( selectedRow.index() == 6 ) return;
-				if( selectedRow.index() == 0 && selectedRow.hasClass('expandedMessage') == false ) selectedColumn = "Severity";
-				if( selectedRow.index() == 1 ) 
-				{
-					selectedNodeText = selectedNodeText.replace( " ", "T" );
-					selectedColumn = "Date";
-				}
-				if( selectedRow.index() == 2 ) selectedColumn = "Facility";
-				if( selectedRow.index() == 3 ) selectedColumn = "Host";
-				if( selectedRow.index() == 4 ) selectedColumn = "Syslogtag";
-				if( selectedRow.index() == 5 ) return;
-				if( selectedRow.hasClass('expandedMessage') == true ) return;
-				
-				menudate = [{
-				text: 'Add logs newer than \'' + selectedNodeText + '\' to filterset',
-				action: function () {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\">\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}, {
-					text: 'Add logs older than \'' + selectedNodeText + '\' in filterset',
-					action: function (t) {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}];
-				
-				menu = [{
-				text: 'Add \'' + selectedNodeText + '\' to filterset',
-				action: function () {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"=\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}, {
-					text: 'Exclude \'' + selectedNodeText + '\' in filterset',
-					action: function (t) {
-						$("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<>\"" + selectedNodeText + "\" ");
-						$('#cmdSearch').click();
-						context.destroy();
-					}
-				}];
-				
-				if( selectedRow.index() == 1 ) 
-					context.attach($("table-style tr"), menudate);
-				else
-					context.attach($("table-style tr"), menu);
-			}
-		}); 
-	
-		$('#table-style').on('click-row.bs.table', function (e, row, $element) {
-			//console.log( JSON.stringify( row ) );
-			
-			if( $element.hasClass('expandedMessage') == false)
-			{
-				// Add new tr with full message + add class
-				$element.after('<tr><td colspan="7" class="expandedMessage"><div class="increase-font-size">' + escapeHtml(row.Message) + '</div></td></tr>');
-				$element.addClass('expandedMessage');
-			}
-			else
-			{
-				// Remove previous created tr + remove class
-				$element.closest('tr').next().remove();
-				$element.removeClass('expandedMessage');
-			}
-		});
-
-		$('[data-toggle="tooltip"]').tooltip({
-			'placement': 'top',  
-			'trigger': 'hover focus'
-		});
-
-		$('[data-toggle="tooltip-bottom"]').tooltip({
-			'placement': 'bottom',  
-			'trigger': 'hover focus'
-		});
-		
-		$('#cmdSearch').click(function(e) {
-			var classes = 'table table-hover small-table table-striped';
-			e.preventDefault();
-			var search = $('#txtSearch').val();
-			//$('#txtSearch').val(search);
-			
-			getSummary();
-
-			$('#table-style').bootstrapTable('destroy')
-				.bootstrapTable({
-					classes: classes,
-					url: 'json/events.php?&search=' + encodeURIComponent(search)
-			});
-			
-			console.log(encodeURIComponent(search));
-		});
-		
-		$('#cmdReset').click(function (e) {
-			e.preventDefault();
-			$("#txtSearch").val("");
-			$('#cmdSearch').click();
-		});
-
-		$("#pgDebug").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"DEBUG\" ");
-			$('#cmdSearch').click();
-		});
-
-		$("#pgNotice").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"NOTICE\" ");
-			$('#cmdSearch').click();
-		});
-
-		$("#pgInfo").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"INFO\" ");
-			$('#cmdSearch').click();
-		});
-
-		$("#pgWarning").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"WARNING\" ");
-			$('#cmdSearch').click();
-		});
-
-		$("#pgError").on("click", function() {
-			$("#txtSearch").val($("#txtSearch").val() + "\"Severity\"=\"ERROR\" ");
-			$('#cmdSearch').click();
-		});
-		
+<script type="text/javascript">
+$(function () {
+    var firstRowID, lastRowID;
+    
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    
+    // Add event handlers for bootstrap table
+    $('#table-style').on('all.bs.table', function(e, name, args) {
+        console.log('Event:', name, 'triggered with args:', args);
     });
 
-	function getSummary() { 
-	    $.getJSON("json/events_summary.php?" + "search=" + encodeURIComponent($("#txtSearch").val()), function(data) {
-	        var items = data.length;
-	        var sum = 0;
-	        var progressBars = {
-	            3: { id: "#pgError", flag: false },
-	            4: { id: "#pgWarning", flag: false },
-	            5: { id: "#pgNotice", flag: false },
-	            6: { id: "#pgInfo", flag: false },
-	            7: { id: "#pgDebug", flag: false }
-	        };
-	
-	        for (var x = 0; x < items; x++) {
-	            var key = parseInt(data[x][0], 10);
-	            if (progressBars[key]) {
-	                sum += data[x][1];
-	            }
-	        }
-	
-	        for (var x = 0; x < items; x++) {
-	            var key = parseInt(data[x][0], 10);
-	            if (progressBars[key]) {
-	                $(progressBars[key].id).css('width', ((data[x][1] / sum) * 100) + "%");
-	                progressBars[key].flag = true;
-	            }
-	        }
-	
-	        for (var key in progressBars) {
-	            if (!progressBars[key].flag) {
-	                $(progressBars[key].id).css('width', "0%");
-	            }
-	        }
-	    });
-	}
+    $('#table-style').on('post-body.bs.table', function() {
+        console.log('Table body loaded');
+    });
+    
+    $('#table-style').on('load-success.bs.table', function(data) {
+        console.log('Data loaded successfully:', data);
+    });
+    
+    $('#table-style').on('load-error.bs.table', function(status, res) {
+        console.error('Load Error:', status, res);
+    });
+    
+    getSummary();
+    
+    var selectedRow = "";
+    var selectedNodeText = "";
 
-	
-	function toInt( val ) {
-		return val & 1;
-	}
-	
-	function rowStyle(row, index) {
-		return {
-			classes: 'ID_' + row.ID
-		};
+    var menu = "", menudate = "";
+    
+    $('#table-style').css('cursor', 'pointer');
+
+    $("#table-style").delegate("tr td", "mousedown", function(event) {
+        if(event.which == 3){
+            
+            context.destroy();
+
+            var selectedRow = $(this);
+            selectedNodeText = selectedRow.html();
+            selectedColumn = "";
+            
+            if(selectedRow.find('span').length > 0) selectedNodeText = selectedRow.find('span').html();
+
+            if(selectedRow.index() == 6) return;
+            if(selectedRow.index() == 0 && selectedRow.hasClass('expandedMessage') == false) selectedColumn = "Severity";
+            if(selectedRow.index() == 1) 
+            {
+                selectedNodeText = selectedNodeText.replace(" ", "T");
+                selectedColumn = "Date";
+            }
+            if(selectedRow.index() == 2) selectedColumn = "Facility";
+            if(selectedRow.index() == 3) selectedColumn = "Host";
+            if(selectedRow.index() == 4) selectedColumn = "SysLogTag";
+            if(selectedRow.index() == 5) return;
+            if(selectedRow.hasClass('expandedMessage') == true) return;
+            
+            menudate = [{
+            text: 'Add logs newer than \'' + selectedNodeText + '\' to filterset',
+            action: function () {
+                    $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\">\"" + selectedNodeText + "\" ");
+                    updateTable();
+                    context.destroy();
+                }
+            }, {
+                text: 'Add logs older than \'' + selectedNodeText + '\' in filterset',
+                action: function (t) {
+                    $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<\"" + selectedNodeText + "\" ");
+                    updateTable();
+                    context.destroy();
+                }
+            }];
+            
+            menu = [{
+            text: 'Add \'' + selectedNodeText + '\' to filterset',
+            action: function () {
+                    $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"=\"" + selectedNodeText + "\" ");
+                    updateTable();
+                    context.destroy();
+                }
+            }, {
+                text: 'Exclude \'' + selectedNodeText + '\' in filterset',
+                action: function (t) {
+                    $("#txtSearch").val($("#txtSearch").val() + "\"" + selectedColumn + "\"<>\"" + selectedNodeText + "\" ");
+                    updateTable();
+                    context.destroy();
+                }
+            }];
+            
+            if(selectedRow.index() == 1) 
+                context.attach($("table-style tr"), menudate);
+            else
+                context.attach($("table-style tr"), menu);
+        }
+    }); 
+
+    $('#table-style').on('click-row.bs.table', function (e, row, $element) {
+        if($element.hasClass('expandedMessage') == false)
+        {
+            // Add new tr with full message + add class
+            $element.after('<tr><td colspan="7" class="expandedMessage"><div class="increase-font-size">' + escapeHtml(row.Message) + '</div></td></tr>');
+            $element.addClass('expandedMessage');
+        }
+        else
+        {
+            // Remove previous created tr + remove class
+            $element.closest('tr').next().remove();
+            $element.removeClass('expandedMessage');
+        }
+    });
+
+    $('[data-toggle="tooltip"]').tooltip({
+        'placement': 'top',  
+        'trigger': 'hover focus'
+    });
+
+    $('[data-toggle="tooltip-bottom"]').tooltip({
+        'placement': 'bottom',  
+        'trigger': 'hover focus'
+    });
+    
+    // Function to update table with current search
+    function updateTable() {
+        var search = $('#txtSearch').val();
+        getSummary();
+        $('#table-style').bootstrapTable('refresh', {
+            url: 'json/events.php?&search=' + encodeURIComponent(search)
+        });
     }
-	
-	function SeverityFormat(value)
-	{
-		if(value == "0") return "<span class=\"label label-danger\">EMERGENCY</span>"; 
-		if(value == "1") return "<span class=\"label label-danger\">ALERT</span>"; 
-		if(value == "2") return "<span class=\"label label-danger\">CRITICAL</span>"; 
-		if(value == "3") return "<span class=\"label label-danger\">ERROR</span>"; 
-		if(value == "4") return "<span class=\"label label-warning\">WARNING</span>"; 
-		if(value == "5") return "<span class=\"label label-success\">NOTICE</span>"; 
-		if(value == "6") return "<span class=\"label label-info\">INFO</span>"; 
-		if(value == "7") return "<span class=\"label label-primary\">DEBUG</span>"; 
-		else return value;
-	}
-	
-	function MessagetypeFormat(value)
-	{
-		return "SYSLOG";
-	}
-	
-	function MessageFormat(value)
-	{
-		return escapeHtml(value);
-	}
-	
-	function idFormat(value, row)
-	{
-		console.log( row + ": " + value );
-		return value;
-	}
+    
+    // Live search on input change
+    var searchTimeout;
+    $('#txtSearch').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(updateTable, 300); // Debounce for 300ms
+    });
 
-	function LargeMessageFormat(value)
-	{
-		return "<span class='largemessage'>" + value + "</span>";
-	}
+    // Remove the old search box since we're using bootstrap-table's built-in search
+    $('#searchForm').remove();
 
-	function FacilityFormat(value)
-	{
-		switch(value)
-		{
-			case "0": { return "KERNEL-MESSAGE"; break; }
-			case "1": { return "USER-MESSAGE"; break; }
-			case "2": { return "MAIL-SYSTEM"; break; }
-			case "3": { return "SECURITY-DAEMON"; break; }
-			case "4": { return "AUTH-MESSAGE"; break; }
-			case "5": { return "SYSLOGD"; break; }
-			case "6": { return "PRINTER"; break; }
-			case "7": { return "NETWORK"; break; }
-			case "8": { return "UUCP"; break; }
-			case "9": { return "CRON"; break; }
-			case "10": { return "AUTH-MESSAGE-10"; break; }
-			case "11": { return "FTP"; break; }
-			case "12": { return "NTP"; break; }
-			case "13": { return "LOG-AUDIT"; break; }
-			case "14": { return "LOG-ALERT"; break; }
-			case "15": { return "CLOCK-DAEMON"; break; }
-			case "16": { return "LOCAL0"; break; }
-			case "17": { return "LOCAL1"; break; }
-			case "18": { return "LOCAL2"; break; }
-			case "19": { return "LOCAL3"; break; }
-			case "20": { return "LOCAL4"; break; }
-			case "21": { return "LOCAL5"; break; }
-			case "22": { return "LOCAL6"; break; }
-			case "23": { return "LOCAL7"; break; }
-		}
-	}
-	
-        function escapeHtml(text) {
-                return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+    // Update the click handlers for severity filters
+    $("#pgDebug").on("click", function() {
+        $('#table-style').bootstrapTable('filterBy', { Priority: 7 });
+    });
+
+    $("#pgNotice").on("click", function() {
+        $('#table-style').bootstrapTable('filterBy', { Priority: 5 });
+    });
+
+    $("#pgInfo").on("click", function() {
+        $('#table-style').bootstrapTable('filterBy', { Priority: 6 });
+    });
+
+    $("#pgWarning").on("click", function() {
+        $('#table-style').bootstrapTable('filterBy', { Priority: 4 });
+    });
+
+    $("#pgError").on("click", function() {
+        $('#table-style').bootstrapTable('filterBy', { Priority: 3 });
+    });
+    
+    // Check if there are any events every 10 seconds
+    setInterval(function() {
+        getSummary();
+    }, 10000);
+});
+
+function getSummary() { 
+    $.getJSON("json/events_summary.php?" + "search=" + encodeURIComponent($("#txtSearch").val()), function(data) {
+        var items = data.length;
+        var sum = 0;
+        var progressBars = {
+            3: { id: "#pgError", flag: false },
+            4: { id: "#pgWarning", flag: false },
+            5: { id: "#pgNotice", flag: false },
+            6: { id: "#pgInfo", flag: false },
+            7: { id: "#pgDebug", flag: false }
+        };
+
+        for (var x = 0; x < items; x++) {
+            var key = parseInt(data[x][0], 10);
+            if (progressBars[key]) {
+                sum += data[x][1];
+            }
         }
 
-	</script>
-  
- <body>
- 
-<div style="width:90%; margin: 0 auto; display: block">
-<nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		</button>
-		<a class="navbar-brand" href="#"><?php echo $site_name; ?></a>
-    </div>
+        for (var x = 0; x < items; x++) {
+            var key = parseInt(data[x][0], 10);
+            if (progressBars[key]) {
+                $(progressBars[key].id).css('width', ((data[x][1] / sum) * 100) + "%");
+                progressBars[key].flag = true;
+            }
+        }
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li id="cmdEvents" class="active events" data-toggle="tooltip-bottom" title="Events"><a href="#"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-	  </ul>
-      <form class="navbar-form navbar-right" role="search">
-        <div class="form-group">
-          <input id="txtSearch" type="text" class="form-control input-widesearch" placeholder="Search" style="width: 500px">
-        </div>
-        <button id="cmdSearch" type="submit" class="btn btn-default" data-toggle="tooltip-bottom" title="Refresh"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button>
-        <button id="cmdReset" type="submit" class="btn btn-default" data-toggle="tooltip-bottom" title="Reset all">Reset</button>
-      </form>
-    </div><!-- /.navbar-collapse -->
-  </div><!-- /.container-fluid -->
-</nav>
+        for (var key in progressBars) {
+            if (!progressBars[key].flag) {
+                $(progressBars[key].id).css('width', "0%");
+            }
+        }
+    });
+}
 
-<div id="debugmessages"></div>
+function toInt(val) {
+    return val & 1;
+}
 
-<div class="progress">
-  <div id="pgDebug" class="progress-bar progress-bar-primary progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Debug">
-    <span class="sr-only">20% Complete (debug)</span>
-  </div>
-  <div id="pgInfo" class="progress-bar progress-bar-info progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Information">
-    <span class="sr-only">20% Complete (info)</span>
-  </div>
-  <div id="pgNotice" class="progress-bar progress-bar-success progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Notice">
-    <span class="sr-only">20% Complete (notice)</span>
-  </div>
-  <div id="pgWarning" class="progress-bar progress-bar-warning progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Warning">
-    <span class="sr-only">20% Complete (warning)</span>
-  </div>
-  <div id="pgError" class="progress-bar progress-bar-danger progress-bar-striped" style="width: 0%" data-toggle="tooltip" title="Error">
-    <span class="sr-only">20% Complete (danger)</span>
-  </div>
-</div>
+function rowStyle(row, index) {
+    return {
+        classes: 'ID_' + row.ID
+    };
+}
 
-<!-- Modal -->
-<div class="modal" id="mdEventDetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="mdEventDetailsLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+function SeverityFormat(value, row, index) {
+    var bg = "bg-info", text = "Unknown";
+    
+    switch(parseInt(value)) {
+        case 0:
+            bg = "bg-danger";
+            text = "EMERGENCY";
+            break;
+        case 1:
+            bg = "bg-danger";
+            text = "ALERT";
+            break;
+        case 2:
+            bg = "bg-danger";
+            text = "CRITICAL";
+            break;
+        case 3:
+            bg = "bg-danger";
+            text = "ERROR";
+            break;
+        case 4:
+            bg = "bg-warning";
+            text = "WARNING";
+            break;
+        case 5:
+            bg = "bg-info";
+            text = "NOTICE";
+            break;
+        case 6:
+            bg = "bg-info";
+            text = "INFO";
+            break;
+        case 7:
+            bg = "bg-secondary";
+            text = "DEBUG";
+            break;
+        default:
+            bg = "bg-info";
+            text = "Unknown";
+    }
+    
+    // Add a data attribute with the text value for searching
+    return "<span class='badge " + bg + "' data-severity='" + text + "'>" + text + "</span>";
+}
 
-  <!-- Table class="table small-table" -->
-  <table id="table-style" class="table small-table table-striped" data-toggle="table" data-url="json/events.php" data-height="800" data-pagination="true" data-page-size="100">
-	<thead> 
-		<tr>
-			<th data-field="ID" data-visible="false" data-formatter="idFormat">Id</th>
-			<th data-field="Priority" data-formatter="SeverityFormat">Severity</th>
-			<th data-field="DeviceReportedTime">Date</th>
-			<th data-field="Priority" data-visible="false">HiddenSeverity</th>
-			<th data-field="Facility" data-formatter="FacilityFormat">Facility</th>
-			<th data-field="FromHost">Host</th>
-			<th data-field="SysLogTag">Syslogtag</th>
-			<th data-field="processid" data-visible="false">ProcessID</th>
-			<th data-field="Messagetype" data-formatter="MessagetypeFormat">Messagetype</th>
-			<th data-field="SmallMessage" data-toggle="tooltip" data-content="Message" data-formatter="MessageFormat">Message</th>
-			<th data-field="Message" data-visible="false" data-formatter="LargeMessageFormat">Message</th>
-		</tr>
-	</thead>
-  </table>
-  
-</div>
-<footer class="footer">
-    <div class="container">
-	</div>
-</footer>
-  </body>
-</html>
+// Add a custom filter function for severity
+$.extend($.fn.bootstrapTable.defaults.formatSearch, {
+    Priority: function(value) {
+        var severityMap = {
+            'EMERGENCY': 0,
+            'ALERT': 1,
+            'CRITICAL': 2,
+            'ERROR': 3,
+            'WARNING': 4,
+            'NOTICE': 5,
+            'INFO': 6,
+            'DEBUG': 7
+        };
+        return severityMap[value.toUpperCase()] || value;
+    }
+});
+
+function escapeHtml(unsafe) {
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+</script>
+
+<?php include 'includes/footer.php'; ?>
 

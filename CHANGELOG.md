@@ -2,47 +2,43 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.0] - 2024-03-24
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
 
 ### Added
-- Docker support with docker-compose
-- Interactive dashboard with real-time charts
-- Alert system with custom rules
-- System health monitoring
-- Advanced search capabilities
-- Mobile-responsive design
-- Automatic log rotation and cleanup
-- Database backup solution
-- Health checks for all services
-- Monitoring script for service health
+- Modern Bootstrap-based interface for system logs
+- Real-time log viewing with search capabilities
+- Severity-based color coding for log levels
+- Server-side pagination for better performance
+- Basic export functionality (CSV, Excel, TXT)
+- Column visibility toggles
+- Docker development environment
+- Basic documentation
 
 ### Changed
-- Upgraded to PHP 8.2
-- Improved database schema with indexes
-- Enhanced security measures
-- Better error handling
-- Improved logging system
-- Updated UI with Bootstrap
-- Added Chart.js for visualizations
+- Updated to Bootstrap 5.3.0
+- Improved table layout and responsiveness
+- Enhanced search functionality with multiple criteria
+- Modernized UI components
 
-### Fixed
-- SQL injection vulnerabilities
-- XSS vulnerabilities
-- Memory leaks in PHP
-- Database connection issues
-- Log rotation issues
+### Known Issues
+- Column visibility toggle functionality needs improvement
+- Export feature requires stabilization
+- Performance optimization needed for large datasets
+- Security measures need implementation
+- Documentation requires expansion
 
-### Security
-- Added prepared statements for all queries
-- Implemented CSRF protection
-- Added rate limiting
-- Improved session security
-- Disabled dangerous PHP functions
-- Added secure headers
+## [0.1.0] - 2024-03-XX
 
-### Documentation
-- Updated README with Docker instructions
-- Added detailed feature documentation
-- Added security documentation
-- Added maintenance instructions
-- Added contribution guidelines 
+### Added
+- Initial development release
+- Basic log viewing functionality
+- Search and filter capabilities
+- Docker development environment
+- Configuration template
+- Basic documentation
+
+[Unreleased]: https://github.com/yourusername/rsyslog-webui/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/yourusername/rsyslog-webui/releases/tag/v0.1.0 

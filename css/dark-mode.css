@@ -1,16 +1,501 @@
-[data-theme="dark"] {
-  background-color: #111 !important;
-  color: #eee;
+/* Dark Mode Theme for RSyslog WebUI */
+:root {
+  --dark-bg: #1e2124;
+  --dark-card-bg: #282b30;
+  --dark-text: #ffffff;
+  --dark-text-secondary: #b9bbbe;
+  --dark-border: #36393f;
+  --dark-hover: #32353b;
+  --dark-table-header: #36393f;
+  --dark-table-row-even: #2f3136;
+  --dark-input-bg: #36393f;
+  --dark-btn-bg: #36393f;
 }
 
-[data-theme="dark"] .bg-light {
-  background-color: #333 !important;
+/* Ensure proper layout for sticky footer */
+html {
+  position: relative;
+  min-height: 100%;
 }
 
-[data-theme="dark"] .bg-white {
-  background-color: #000 !important;
+body {
+  margin-bottom: 60px; /* Footer height */
 }
 
-[data-theme="dark"] .bg-black {
-  background-color: #eee !important;
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background-color: var(--dark-bg);
+  border-top: 1px solid var(--dark-border);
+}
+
+/* Progress bar severity labels */
+.severity-label {
+  display: inline-block;
+  font-size: 0.875rem;
+  line-height: 25px;
+  color: white;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+body.theme-dark {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+/* Card and container styles */
+.theme-dark .card {
+  background-color: var(--dark-card-bg);
+  border: none;
+  border-radius: 8px;
+}
+
+.theme-dark .card-header {
+  background-color: rgba(0, 0, 0, 0.15);
+  border-color: var(--dark-border);
+}
+
+.theme-dark .modal-header,
+.theme-dark .modal-footer {
+  border-color: var(--dark-border);
+}
+
+/* Table Improvements */
+.table {
+    --bs-table-striped-bg: rgba(0, 0, 0, 0.02);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.theme-dark .table {
+    background-color: var(--dark-card-bg);
+    color: var(--dark-text);
+    margin: 0;
+}
+
+/* Table Header Styling */
+.theme-dark .table > thead {
+    background-color: var(--dark-table-header);
+    border: none;
+}
+
+.theme-dark .table > thead > tr > th {
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--dark-text-secondary);
+    padding: 16px;
+    border: none;
+    background-color: transparent !important;
+}
+
+/* Table Body Styling */
+.theme-dark .table > tbody > tr > td {
+    padding: 16px;
+    border: none;
+    color: var(--dark-text);
+    font-size: 13.5px;
+    background-color: var(--dark-card-bg);
+}
+
+.theme-dark .table > tbody > tr:nth-child(even) {
+    background-color: var(--dark-table-row-even);
+}
+
+/* Hover Effects */
+.theme-dark .table > tbody > tr:hover {
+    background-color: var(--dark-hover);
+}
+
+/* Sort Icons */
+.table thead th.sortable {
+    cursor: pointer;
+    position: relative;
+    padding-right: 24px;
+}
+
+.table thead th.sortable:after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.table thead th.sortable.asc:after {
+    content: "↑";
+    color: #2c3338;
+}
+
+.table thead th.sortable.desc:after {
+    content: "↓";
+    color: #2c3338;
+}
+
+.theme-dark .table thead th.sortable:after {
+    content: "↕";
+    position: absolute;
+    right: 8px;
+    color: var(--dark-text-secondary);
+    opacity: 0.5;
+}
+
+.theme-dark .table thead th.sortable.asc:after,
+.theme-dark .table thead th.sortable.desc:after {
+    opacity: 1;
+    color: var(--dark-text);
+}
+
+/* Message Column Styling */
+.table td:last-child {
+    font-family: "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.theme-dark .table td:last-child {
+    font-family: "SF Mono", Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--dark-text);
+}
+
+/* Expanded Message Styling */
+.expandedMessage {
+    background-color: #f8f9fa !important;
+    padding: 16px !important;
+}
+
+.theme-dark .expandedMessage {
+    background-color: var(--dark-table-header) !important;
+    padding: 16px !important;
+    border: 1px solid var(--dark-border);
+}
+
+.expandedMessage .increase-font-size {
+    font-family: "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.theme-dark .expandedMessage .increase-font-size {
+    color: var(--dark-text);
+}
+
+/* Pagination Styling */
+.pagination {
+    margin: 16px 0;
+}
+
+.page-link {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    margin: 0 2px;
+}
+
+.theme-dark .page-link {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+    color: var(--dark-text);
+}
+
+.theme-dark .page-link:hover {
+    background-color: var(--dark-hover);
+}
+
+.theme-dark .page-item.active .page-link {
+    background-color: #4d78cc;
+    border-color: #4d78cc;
+}
+
+/* Form controls */
+.theme-dark .form-control,
+.theme-dark .form-select,
+.theme-dark .input-group-text {
+  background-color: var(--dark-input-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.theme-dark .form-control:focus,
+.theme-dark .form-select:focus {
+  background-color: var(--dark-input-bg);
+  color: var(--dark-text);
+  border-color: #4d78cc;
+  box-shadow: 0 0 0 0.25rem rgba(77, 120, 204, 0.25);
+}
+
+.theme-dark .form-control::placeholder {
+  color: var(--dark-text-secondary);
+}
+
+/* Navbar and navigation */
+.theme-dark .navbar {
+  background-color: var(--dark-bg);
+  border-bottom: 1px solid var(--dark-border);
+  padding: 1rem 0;
+}
+
+.theme-dark .navbar-brand,
+.theme-dark .nav-link {
+  color: var(--dark-text);
+}
+
+.theme-dark .nav-link:hover,
+.theme-dark .nav-link:focus {
+  color: #5865f2;
+}
+
+.theme-dark .nav-link.active {
+  color: #5865f2;
+}
+
+.theme-dark .navbar-toggler {
+  border-color: var(--dark-border);
+}
+
+/* Alert badges and priorities */
+.theme-dark .badge {
+  padding: 4px 8px;
+  font-weight: 500;
+  font-size: 12px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.theme-dark .badge.bg-secondary {
+  background-color: rgba(185, 187, 190, 0.15) !important;
+  color: #b9bbbe !important;
+}
+
+.theme-dark .badge.bg-info {
+  background-color: rgba(88, 101, 242, 0.15) !important;
+  color: #5865f2 !important;
+}
+
+.theme-dark .badge.bg-warning {
+  background-color: rgba(250, 166, 26, 0.15) !important;
+  color: #faa61a !important;
+}
+
+.theme-dark .badge.bg-danger {
+  background-color: rgba(237, 66, 69, 0.15) !important;
+  color: #ed4245 !important;
+}
+
+/* Improved readability for critical alerts */
+.theme-dark .priority-critical {
+  background-color: #523238 !important;
+  color: #f8d7da !important;
+  border: 1px solid #7c3a45;
+}
+
+/* Buttons */
+.theme-dark .btn-outline-primary {
+  color: #5d8de6;
+  border-color: #5d8de6;
+}
+
+.theme-dark .btn-outline-primary:hover {
+  background-color: #3a5d9e;
+  border-color: #3a5d9e;
+  color: #ffffff;
+}
+
+.theme-dark .btn-outline-secondary {
+  color: #adb5bd;
+  border-color: #6c757d;
+}
+
+.theme-dark .btn-outline-secondary:hover {
+  background-color: #5c636a;
+  border-color: #565e64;
+  color: #ffffff;
+}
+
+.theme-dark .btn-outline-success {
+  color: #75b798;
+  border-color: #198754;
+}
+
+.theme-dark .btn-outline-success:hover {
+  background-color: #157347;
+  border-color: #146c43;
+  color: #ffffff;
+}
+
+.theme-dark .btn-outline-danger {
+  color: #ea868f;
+  border-color: #dc3545;
+}
+
+.theme-dark .btn-outline-danger:hover {
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+  color: #ffffff;
+}
+
+/* Simulator Progress Bar */
+.theme-dark .progress {
+  background-color: var(--dark-table-header);
+}
+
+/* System Events Table Specific */
+.theme-dark .system-events-table thead th {
+  background-color: var(--dark-table-header);
+  color: var(--dark-text);
+  font-weight: 500;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.theme-dark .system-events-table tbody td {
+  font-weight: normal;
+  color: var(--dark-text);
+}
+
+/* Alerts in dark mode */
+.theme-dark .alert-info {
+  background-color: #2b4764;
+  color: #cce5ff;
+  border-color: #3a7ca8;
+}
+
+.theme-dark .alert-success {
+  background-color: #285b42;
+  color: #d1e7dd;
+  border-color: #2c6a4d;
+}
+
+.theme-dark .alert-warning {
+  background-color: #664d03;
+  color: #fff3cd;
+  border-color: #997404;
+}
+
+.theme-dark .alert-danger {
+  background-color: #58151c;
+  color: #f8d7da;
+  border-color: #842029;
+}
+
+/* Pagination */
+.theme-dark .page-link {
+  background-color: var(--dark-card-bg);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.theme-dark .page-link:hover {
+  background-color: var(--dark-hover);
+  border-color: var(--dark-border);
+  color: var(--dark-text);
+}
+
+.theme-dark .page-item.active .page-link {
+  background-color: #4d78cc;
+  border-color: #3d68bc;
+  color: white;
+}
+
+/* 404 page adjustments */
+.theme-dark .error-page {
+  color: var(--dark-text);
+}
+
+.theme-dark .error-face {
+  fill: #6c7793;
+}
+
+/* Simulator modal in dark mode */
+.theme-dark #simulationModal .modal-content {
+  background-color: var(--dark-card-bg);
+  color: var(--dark-text);
+}
+
+.theme-dark #simulationStatus {
+  background-color: var(--dark-input-bg) !important;
+  border-color: var(--dark-border) !important;
+}
+
+.theme-dark #simulationStatus small {
+  color: var(--dark-text) !important;
+}
+
+.theme-dark #simulationStats .border {
+  border-color: var(--dark-border) !important;
+}
+
+/* System Events title */
+.theme-dark h1 {
+  color: var(--dark-text);
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Footer styling */
+.theme-dark .footer {
+  background-color: var(--dark-bg);
+  border-top: 1px solid var(--dark-border);
+  color: var(--dark-text-secondary);
+  padding: 1rem 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+}
+
+/* Table pagination and info styling */
+.theme-dark .fixed-table-pagination {
+    color: #adb5bd;
+}
+
+.theme-dark .fixed-table-pagination .pagination-detail {
+    color: #adb5bd;
+}
+
+.theme-dark .fixed-table-toolbar .columns-right .btn-group .dropdown-menu {
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+}
+
+.theme-dark .fixed-table-toolbar .columns-right .btn-group .dropdown-menu li a {
+    color: #adb5bd;
+}
+
+.theme-dark .fixed-table-toolbar .columns-right .btn-group .dropdown-menu li a:hover {
+    background-color: var(--dark-hover);
+}
+
+.theme-dark .fixed-table-toolbar .columns label {
+    color: #adb5bd;
+}
+
+.theme-dark .page-item.disabled .page-link {
+    color: #adb5bd;
+    background-color: var(--dark-card-bg);
+    border-color: var(--dark-border);
+}
+
+.theme-dark .bootstrap-table .fixed-table-container .table thead th .sortable {
+    color: #adb5bd;
+}
+
+.theme-dark .bootstrap-table .fixed-table-container .table tbody td {
+    color: #adb5bd;
+}
+
+.theme-dark .fixed-table-loading {
+    background-color: var(--dark-card-bg);
+    color: #adb5bd;
+}
+
+.theme-dark .fixed-table-body {
+    color: #adb5bd;
 }
