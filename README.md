@@ -1,27 +1,28 @@
 # RSyslog WebUI
 
-A modern web interface for viewing and managing RSyslog events. This project is currently in active development.
+A web interface for viewing and managing RSyslog events. This project is currently under active development and not ready for production use.
 
 ## ⚠️ Development Status
 
-This is a development version and while mostly functional, there are known issues and incomplete features. Use in production environments is not recommended at this time.
+This is an early development version with multiple known issues that are being worked on. Not recommended for production use.
 
 ### Known Issues
-- Column visibility and export functionality in the events table may not work consistently
-- Some UI elements need proper styling and alignment
-- Performance optimization needed for large log volumes
+- Column visibility and export functionality not working properly
+- UI elements need proper styling and alignment
+- Performance issues with large log volumes
 - Documentation is incomplete
-- Security hardening needed before production use
+- Security features not implemented yet
+- Table filtering and search needs improvement
 
-## Features
+## Planned Features
 
-- 📊 Modern Bootstrap-based interface for viewing system logs
-- 🔍 Real-time log viewing with search and filter capabilities
-- 📱 Responsive design that works on desktop and mobile
-- 🎨 Severity-based color coding for easy log level identification
-- ⚡ Fast data loading with server-side pagination
-- 📥 Export capabilities (CSV, Excel, TXT) - *currently being stabilized*
-- 📋 Column visibility toggles - *currently being stabilized*
+- 📊 Bootstrap-based interface for viewing system logs
+- 🔍 Real-time log viewing with search capabilities
+- 📱 Responsive design for desktop and mobile
+- 🎨 Severity-based color coding for log levels
+- ⚡ Server-side pagination
+- 📥 Export capabilities (CSV, Excel, TXT)
+- 📋 Column visibility controls
 
 ## Prerequisites
 
@@ -34,7 +35,7 @@ This is a development version and while mostly functional, there are known issue
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/rsyslog-webui.git
+git clone https://github.com/tinylama/rsyslog-webui.git
 ```
 
 2. Copy the configuration template:
@@ -51,7 +52,7 @@ chown -R www-data:www-data /path/to/rsyslog-webui
 
 ## Docker Setup
 
-A Docker setup is provided for development purposes:
+A basic Docker setup is provided for development:
 
 ```bash
 docker-compose up -d
@@ -78,12 +79,12 @@ Access the application at `http://localhost:8080`
 
 ## Security Notice
 
-⚠️ This version is not yet hardened for production use. Known areas needing attention:
+⚠️ This version has no security measures implemented yet. Known areas to be addressed:
 - Input validation
 - SQL injection prevention
 - XSS protection
 - CSRF protection
-- Proper authentication/authorization
+- Authentication/authorization
 - Secure session handling
 
 ## License
@@ -92,23 +93,16 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Roadmap
 
-- [ ] Stabilize column visibility and export functionality
-- [ ] Add user authentication and authorization
-- [ ] Implement proper security measures
+- [ ] Fix column visibility and export functionality
+- [ ] Implement basic security measures
+- [ ] Add user authentication
 - [ ] Add unit tests
-- [ ] Improve documentation
+- [ ] Complete documentation
 - [ ] Add configuration UI
-- [ ] Performance optimizations
-- [ ] Add alert management system
-- [ ] Implement log rotation management
-
-## Acknowledgments
-
-- Bootstrap Table library
-- Bootstrap framework
-- RSyslog team
-- All contributors
+- [ ] Optimize performance
+- [ ] Add alert management
+- [ ] Implement log rotation
 
 ## Support
 
-This is a development version. For issues and feature requests, please use the GitHub issue tracker.
+This is an early development version. For issues and feature requests, please use the GitHub issue tracker.

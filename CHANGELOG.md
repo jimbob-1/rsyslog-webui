@@ -8,37 +8,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Modern Bootstrap-based interface for system logs
-- Real-time log viewing with search capabilities
-- Severity-based color coding for log levels
-- Server-side pagination for better performance
-- Basic export functionality (CSV, Excel, TXT)
-- Column visibility toggles
-- Docker development environment
-- Basic documentation
+- Basic Bootstrap-based interface
+- Initial log viewing implementation
+- Severity color coding
+- Server-side pagination attempt
+- Export functionality (not working properly)
+- Column visibility controls (not working properly)
+- Docker development setup
 
 ### Changed
 - Updated to Bootstrap 5.3.0
-- Improved table layout and responsiveness
-- Enhanced search functionality with multiple criteria
-- Modernized UI components
+- Modified table layout
+- Added search functionality (needs improvement)
 
 ### Known Issues
-- Column visibility toggle functionality needs improvement
-- Export feature requires stabilization
-- Performance optimization needed for large datasets
-- Security measures need implementation
-- Documentation requires expansion
+- Column visibility controls not functioning
+- Export feature not working
+- Performance issues with large datasets
+- Security measures not implemented
+- Documentation incomplete
+- Search and filtering unreliable
 
-## [0.1.0] - 2024-03-XX
+## [0.2.0] - 2024-03-XX
 
 ### Added
-- Initial development release
-- Basic log viewing functionality
-- Search and filter capabilities
+- Initial development version
+- Basic log viewing interface
+- Simple search capability
 - Docker development environment
 - Configuration template
 - Basic documentation
 
-[Unreleased]: https://github.com/yourusername/rsyslog-webui/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/yourusername/rsyslog-webui/releases/tag/v0.1.0 
+[Unreleased]: https://github.com/tinylama/rsyslog-webui/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/tinylama/rsyslog-webui/releases/tag/v0.2.0 
