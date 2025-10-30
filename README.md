@@ -3,7 +3,7 @@
 Requirements
 ---
 * Ensure you have http server i.e. Apache with PHP and MYSQL installed and working.
-* You will need to have rsyslog storing logs in mysql, so install **rsyslog** and **rsyslog-mysql**
+* You will need to have rsyslog storing logs in mysql, so install **rsyslog** and **rsyslog-mysql** and **php-mysql**
 * Create a table for syslog entries and user that can SELECT, INSERT, UPDATE, DELETE, FILE for that table only
 * Add the following to /etc/rsyslog.conf to enable logs to be stored in mysql
 ```
@@ -18,21 +18,36 @@ Installation
 `git clone "https://github.com/Tiny-Lama/rsyslog-webui.git" /var/www/html/syslog-ui
 
 * Create the required config from the template
-`cp /var/www/html/syslog/config-template.php /var/www/html/syslog/config.php
+`cp /var/www/html/syslog-ui/config-template.php /var/www/html/syslog-ui/config.php
 
 * Modify your config file, this is where you will need your mysql database details.
-` sudo nano /var/www/html/syslog/config.php
+` sudo nano /var/www/html/syslog-ui/config.php
 
 * Create a scheduled task for database clean-up. Open crontab
 `sudo crontab -e:
 
 * Modify crontab by pasting this at the end of the file and save (CTRL+O).
 ```
-  1 0 * * * cd /var/www/html/maintenance; /usr/bin/php ./db-maintenance.php
+  1 0 * * * cd /var/www/html/syslog-ui/maintenance; /usr/bin/php ./db-maintenance.php
 ```
 
 Then test in your web browser:
 http://localhost/syslog-ui
+
+
+Search Bar Examples:  
+`"Message"="* Login Success *"`  
+Or more simply:  
+`"* Login Success *"`  
+`"*PHP Warning*"`  
+`*root*`  
+
+Date search examples:  
+`"2025-10-30 12:34:56"`  
+`"2025-02-31"`  
+`1969-12-31`  
+`"Date">"2024-10-30T00:00:00"`  
+
 
 ## Mobile:
 ![Mobile](/images/mobile-screenshot.jpg?raw=true "Mobile")
@@ -41,3 +56,6 @@ http://localhost/syslog-ui
 ![Desktop](/images/screenshot.png?raw=true "Desktop")
 
 [Original Code by hmsdao](https://github.com/hmsdao/bootstrap-rsyslog-ui)
+
+[Improved user Search by xsnidalx]  
+Now simple and advanced users can search by date YYYY-MM-DD, strings, or wildcard searches using * (asterisk).
