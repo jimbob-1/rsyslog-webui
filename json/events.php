@@ -5,6 +5,7 @@
 			
 	$query = "SELECT *, LEFT(Message, 120) AS SmallMessage FROM SystemEvents ";
 	$wherestring = "";
+	$conditional = "AND";
 	if (isset($_GET[ "search" ])){
 		$searchstring = $_GET[ "search" ];
 	}else{
@@ -15,8 +16,29 @@
 	
 	if( $searchstring != "" )
 	{
+		if (!strpbrk($searchstring,'=<>')){
+			//Skip processing statements by excluding expected operators
+			$conditional = "OR";
+			if (preg_match('/^\"{0,1}\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]\"{0,1}$/', $searchstring)){
+				//If it loosely matches datetime format: 2000-02-31 25:00:90, assume date timestamp
+				$searchstring_tmp = " \"Date\"=\"".str_replace(" ", "T", trim($searchstring,'"'))."\"";
+				//Greater than midnight if only YYYY-MM-DD format specified
+			}elseif (preg_match('/^\"{0,1}\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\"{0,1}$/', $searchstring)){
+				// Matches YYYY-MM-DD format, pad for sanity and SQL search
+				$searchstring_tmp = " \"Date\">=\"".trim($searchstring,'"')."T00:00:00\"";
+			}else{
+				$searchstring_tmp = "\"Message\"=\"".trim(str_replace(" ","%20",$searchstring),'"')."\"";
+				$searchstring_tmp .= " \"FromHost\"=\"".trim($searchstring,'"')."\"";
+				$searchstring_tmp .= " \"Date\"=\"".trim($searchstring,'"')."\"";
+			}
+
+			$searchstring = urlencode($searchstring_tmp);
+		}
+
+
 		$wherestring = "";
 		$urlencoded = trim( urldecode( $searchstring ) );
+		$urlencoded = str_replace("*","%",$urlencoded);
 		$array = explode( " ", $urlencoded );
 		
 		for( $x = 0; $x < count( $array ); $x++ )
@@ -27,17 +49,16 @@
 			$keyvalue = "";
 			$expression = "";
 			$position = 0;
-						
 			for( $y = 0; $y < count( $keysarray ); $y++ )
 			{
 				if( $position == 3 && $keysarray[$y] == "\"" ) { $position = 4; }
-				if( $position == 3 && $keysarray[$y] != "\"" ) { $keyvalue .= $keysarray[$y]; }
+				if( $position == 3 && $keysarray[$y] != "\"" ) { $keyvalue .= $keysarray[$y];}
 				if( $position == 2 && $keysarray[$y] == "\"" ) { $position = 3; }
 				if( $position == 2 && $keysarray[$y] != "\"" ) { $expression .= $keysarray[$y]; }
 				if( $position == 1 && $keysarray[$y] == "\"" ) { $position = 2; }
 				if( $position == 1 && $keysarray[$y] != "\"" ) { $keyname .= $keysarray[$y]; }
 				if( $position == 0 && $keysarray[$y] == "\"" ) { $position = 1; }
-			}	
+			}
 
 			if( $keyname == "Host" ) $keyname = "FromHost";
 			if( $keyname == "Facility" ) 
@@ -87,26 +108,36 @@
 			if( $keyname == "Syslogtag" ) $keyname = "SysLogTag";
 			if( $keyname == "Messagetype" ) $keyname = "Messagetype";
 			
-			if( $expression != "=" && $expression != "<>" && $expression != "<" && $expression != ">" )
-				exit();
+			if( $expression != "=" && $expression != "<>" && $expression != "<" && $expression != ">" && $expression != ">=" && $expression != "<="){
+				//exit();
+				break;
+			}
 			
-			if( $expression == "=" ) $expression = "LIKE";
+			if( $expression == "=" && $keyname != "DeviceReportedTime" ) $expression = "LIKE";
+
 			
-			
-			$qArray[ "param".strval( $x ) ] = $keyvalue; 
-			
-			if( $wherestring == "" )
-				$wherestring = " WHERE $keyname $expression :param".strval( $x )." ";
-			else
-				$wherestring .= " AND $keyname $expression :param".strval( $x )." "; 
+			$qArray[ "param".strval( $x ) ] = strtoupper(str_replace("%20", " ", $keyvalue)); 
+
+			if( $wherestring == "" ){
+				if ($keyname != "DeviceReportedTime" && $keyname != "ReceivedAt"){
+					$wherestring = " WHERE UPPER($keyname) $expression UPPER(:param".strval( $x ).") ";
+					//Only non time related fields, weird issue with mysql
+				}else{
+					$wherestring = " WHERE $keyname $expression UPPER(:param".strval( $x ).") ";
+				}
+			}else{
+				if ($keyname != "DeviceReportedTime" && $keyname != "ReceivedAt"){
+					//Only non time related fields, weird issue with mysql
+					$wherestring .= " $conditional UPPER($keyname) $expression UPPER(:param".strval( $x ).") "; 
+				}else{
+					$wherestring .= " $conditional $keyname $expression UPPER(:param".strval( $x ).") "; 
+				}
+			}
 		}
 	}
-	
 	$db = new PDO( "mysql:host=$mysql_server;dbname=$mysql_database;charset=utf8", $mysql_user, $mysql_password );
-
 	$rows = array();
 	$stmt = $db->prepare($query . $wherestring . " ORDER BY ID DESC LIMIT 2000");
-
 	if( $stmt->execute( $qArray ) )
 	foreach( $stmt as $row ) {
 		$rows[] = $row;
